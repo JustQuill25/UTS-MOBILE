@@ -13,6 +13,7 @@ dependencies:
 
   # 🔹 Plugin tambahan untuk proyek OCR
   google_mlkit_text_recognition: ^0.15.0
+  flutter_tts: ^3.8.3
   camera: ^0.10.5+5
   path_provider: ^2.1.2
   path: ^1.8.3
