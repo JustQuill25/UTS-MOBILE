@@ -1,0 +1,29 @@
+name: ocr_sederhana
+description: "A simple Flutter OCR project using Camera and Google ML Kit."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 🔹 Plugin tambahan untuk proyek OCR
+  google_mlkit_text_recognition: ^0.15.0
+  camera: ^0.10.5+5
+  path_provider: ^2.1.2
+  path: ^1.8.3
+
+  # 🔹 Ikon iOS-style bawaan
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
