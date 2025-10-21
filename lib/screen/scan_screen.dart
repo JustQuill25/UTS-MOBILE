@@ -24,11 +24,19 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   void _initCamera() async {
-    cameras = await availableCameras();
-    _controller = CameraController(cameras[0], ResolutionPreset.medium);
-    _initializeControllerFuture = _controller.initialize();
-    if (mounted) {
-      setState(() {});
+    try {
+      cameras = await availableCameras();
+      _controller = CameraController(cameras[0], ResolutionPreset.medium);
+      _initializeControllerFuture = _controller.initialize();
+      if (mounted) setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Kamera gagal dimuat. Periksa izin atau restart aplikasi.',
+          ),
+        ),
+      );
     }
   }
 
@@ -62,7 +70,6 @@ class _ScanScreenState extends State<ScanScreen> {
       );
 
       final XFile image = await _controller.takePicture();
-
       final ocrText = await _ocrFromFile(File(image.path));
 
       if (!mounted) return;
@@ -73,18 +80,40 @@ class _ScanScreenState extends State<ScanScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error saat memproses foto: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Pemindaian gagal! Periksa izin kamera atau coba lagi.',
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Tampilan Loading ketika kamera belum siap
     if (!_controller.value.isInitialized) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+        backgroundColor: Colors.black87,
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: Colors.yellow),
+              SizedBox(height: 20),
+              Text(
+                'Memuat Kamera... Harap tunggu.',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
+    // ✅ Tampilan utama kamera
     return Scaffold(
       appBar: AppBar(title: const Text('Kamera OCR')),
       body: Column(
